@@ -1,4 +1,3 @@
-
 window.onload = onLoad
 let pointer = document.createElement("div")
 pointer.innerHTML += '<img src="pointer.png" alt="" width = 25>'
@@ -75,8 +74,11 @@ function renderCharacterSet(){
 function randomStringFromCharSet(charSet, length){
     let temp = ""
     for (let i = 0; i < length; i++) {
-        temp += charSet[Math.floor(Math.random() * charSet.length)]
-        
+        let char = charSet[Math.floor(Math.random() * charSet.length)]
+        while(char == "⌫"){
+            char = charSet[Math.floor(Math.random() * charSet.length)]
+        }
+        temp += char
     }
     return temp
 }
@@ -92,7 +94,7 @@ function showLoginInfo(){
     correctUsername = randomStringFromCharSet(activeCharacterSet, 4)
     correctPsswd = randomStringFromCharSet(activeCharacterSet, 4
     )
-    document.body.innerHTML = '<div class="login-card"><h2>Friend\'s login info</h2><p>Username: '+ correctUsername + '</p><p>Password: '+correctPsswd+'</p></div>'
+    document.body.innerHTML = '<div class="login-card"><h2>Friend\'s login info</h2><p>Username: '+ correctUsername + '</p><p>Password: '+correctPsswd+'</p></div><p>Press "o" to continue</p>'
 }
 
 function renderGame(){
@@ -156,12 +158,14 @@ function characterSetSelectHold(){
             }
             activeCharacterSet = [...new Set(activeCharacterSet)]
         }
+        activeCharacterSet.push("⌫")
         showLoginInfo()
 }
 function loginInfoPress(){
     renderGame()
 }
 function gamePressAction(){
+    if(currGridIndex != activeCharacterSet.length -1){
     if(!isEditingPassword) {
         username+=activeCharacterSet[currGridIndex]
     }
@@ -170,8 +174,12 @@ function gamePressAction(){
 
     }
     updateGameUI()
+    } else {
+        if(!isEditingPassword) username = username.slice(0,-1)
+        else password = password.slice(0,-1)
+    updateGameUI()
     }
-
+}
 function gameHoldAction(){
     if(!isEditingPassword){
         isEditingPassword = true;
